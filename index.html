@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRE-PUT DASHBOARD - MULTI-AGENT SYSTEM</title>
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Config file for API Key -->
+    <script src="config.js"></script>
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen flex flex-col p-4 md:p-8 pb-20 relative text-slate-800">
+
+    <!-- Rich Background Decorations -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full bg-teal-400/15 blur-[100px] animate-pulse" style="animation-duration: 8s;"></div>
+        <div class="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[100px] animate-pulse" style="animation-duration: 10s; animation-delay: 2s;"></div>
+    </div>
+    
+    <!-- HEADER -->
+    <header id="appHeader" class="flex flex-col transition-all duration-500 overflow-hidden relative z-10 xl:flex-row justify-between items-start xl:items-center mb-8 pb-4 border-b border-slate-200 gap-4 max-w-[1400px] mx-auto w-full">
+        <div>
+            <div class="flex items-center gap-3">
+                <span class="px-3 py-1 text-xs font-bold bg-teal-50 text-teal-600 rounded border border-teal-200 uppercase tracking-widest font-mono">SYSTEM ONLINE</span>
+                <h1 class="text-3xl uppercase flex items-baseline">
+                    <span class="font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 drop-shadow-sm pr-1 mr-2">PRE-PUT</span>
+                    <span class="font-medium tracking-[0.2em] text-slate-400 text-xl">DASHBOARD</span>
+                    <span class="px-2 py-1 bg-slate-200 text-slate-600 rounded text-xs font-bold ml-4 tracking-normal align-middle self-center">v2.1.0-Depth</span>
+                </h1>
+            </div>
+            <p class="text-sm text-slate-500 mt-2 font-medium">前提を組み、スタートラインを突き抜ける。</p>
+        </div>
+        
+        <!-- EXTRA ACTIONS -->
+        <div class="flex flex-wrap items-center gap-3">
+            <input type="file" id="importJsonInput" accept=".json" class="hidden" onchange="importProject(event)">
+            <button onclick="document.getElementById('importJsonInput').click()" class="px-4 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 rounded-lg text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2" title="PCから全データを読み込む">
+                <i class="fa-solid fa-file-import"></i> <span class="hidden sm:inline">IMPORT</span>
+            </button>
+            <button onclick="exportProject()" class="px-4 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-teal-600 rounded-lg text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2" title="全データをPCに保存する">
+                <i class="fa-solid fa-file-export"></i> <span class="hidden sm:inline">EXPORT</span>
+            </button>
+            <button onclick="toggleSaveDrawer()" class="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-teal-600 rounded-lg text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2">
+                <i class="fa-regular fa-folder-open"></i> LOAD SAVES
+            </button>
+            <div class="flex items-center justify-between text-sm text-slate-500 bg-slate-100 px-4 py-2.5 rounded-lg border border-slate-200 shrink-0 gap-2 font-semibold">
+                <div class="flex items-center">
+                    <span class="h-2.5 w-2.5 rounded-full bg-teal-500 mr-2 shadow-[0_0_5px_rgba(20,184,166,0.5)]"></span>
+                    <span class="font-mono">GEMINI-2.5-FLASH</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN INTERFACE -->
+    <div id="mainContainer" class="flex-grow relative w-full max-w-7xl mx-auto">
+        
+        <!-- SAVE DRAWER MODAL -->
+        <div id="saveDrawer" class="hidden absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex flex-col p-6 rounded-2xl border border-slate-200">
+            <div class="bg-white h-full w-full rounded-xl shadow-2xl flex flex-col overflow-hidden">
+                <div class="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50">
+                    <span class="text-base text-slate-800 font-bold uppercase tracking-wider flex items-center">
+                        <i class="fa-regular fa-folder-open mr-2 text-teal-600"></i> セーブデータ履歴
+                    </span>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm px-3 py-1 bg-teal-50 text-teal-700 rounded-full font-mono font-bold" id="savedCount">0 Saves</span>
+                        <button onclick="toggleSaveDrawer()" class="text-slate-400 hover:text-slate-700 transition-colors"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                    </div>
+                </div>
+                <div id="historyList" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto bg-slate-50/50 flex-grow"></div>
+            </div>
+        </div>
+
+        <!-- PHASE 1: INPUT VIEW (Centered) -->
+        <div id="phase1" class="flex flex-col max-w-5xl mx-auto w-full gap-6 mt-4">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-5">
+                <div class="text-center mb-1">
+                    <div class="h-10 w-10 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+                        <i class="fa-solid fa-sliders text-lg"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">New Project Configuration</h2>
+                    <p class="text-base text-slate-500 mt-1 font-medium">プロジェクトの基本変数をセットアップしてください</p>
+                </div>
+                
+                <div>
+                    <label class="block text-base text-slate-600 font-bold tracking-wider mb-2">プロジェクト名 / 新規アイデア</label>
+                    <input type="text" id="projectIdea" value="" 
+                           class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-lg text-slate-800 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all font-semibold"
+                           placeholder="例: LINEクリエイターズスタンプを作って販売してみたい">
+                </div>
+
+                <!-- Quick Preset Tags (Mentoring Preset Guides) -->
+                <div class="mb-6 bg-slate-50/50 border border-slate-200/60 rounded-2xl p-5">
+                    <div class="flex items-center gap-2 text-slate-700 font-bold text-base tracking-wider mb-2">
+                        <i class="fa-regular fa-lightbulb text-amber-500 text-base animate-pulse"></i>
+                        <span>💡 熟練者のこだわりサンプル（初心者の方へおすすめ！）</span>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4 leading-relaxed font-medium">
+                        「最初から何を決めればいいか分からない」という方は、以下のジャンルをタップしてみてください。プロや経験者が実際に設定している「こだわりの記入例」が自動セットされ、すぐ下に「その選択にしている論理的な理由」と「他の正しい選択肢」がビジュアル解説されます。ご自身のアイデアの参考にしながら自由に書き換えて使えます。※何も決まっていなければ空欄のままでスタートしても、AIがすべてを質問で引き出してくれます！
+                    </p>
+                    <div class="flex flex-wrap gap-2.5">
+                        <button type="button" onclick="applyExpertPreset('line')" class="px-5 py-2.5 text-sm bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-600 rounded-xl border border-slate-200 hover:border-teal-300 font-bold transition-all shadow-sm flex items-center gap-1.5 transform hover:-translate-y-0.5">
+                            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> LINEスタンプ販売
+                        </button>
+                        <button type="button" onclick="applyExpertPreset('saas')" class="px-5 py-2.5 text-sm bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-xl border border-slate-200 hover:border-blue-300 font-bold transition-all shadow-sm flex items-center gap-1.5 transform hover:-translate-y-0.5">
+                            <span class="h-2 w-2 rounded-full bg-cyan-500"></span> Webアプリ個人開発
+                        </button>
+                        <button type="button" onclick="applyExpertPreset('ai_art')" class="px-5 py-2.5 text-sm bg-white hover:bg-purple-50 text-slate-700 hover:text-purple-600 rounded-xl border border-slate-200 hover:border-purple-300 font-bold transition-all shadow-sm flex items-center gap-1.5 transform hover:-translate-y-0.5">
+                            <span class="h-2 w-2 rounded-full bg-purple-500"></span> AIイラスト素材販売
+                        </button>
+                        <button type="button" onclick="applyExpertPreset('blog')" class="px-5 py-2.5 text-sm bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-600 rounded-xl border border-slate-200 hover:border-amber-300 font-bold transition-all shadow-sm flex items-center gap-1.5 transform hover:-translate-y-0.5">
+                            <span class="h-2 w-2 rounded-full bg-amber-500"></span> ブログ・アフィリエイト
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Split Inputs -->
+                <div class="mb-4 bg-slate-50/20 border border-slate-200/50 rounded-2xl p-5">
+                    <div class="flex items-center gap-2 text-slate-700 font-bold text-base tracking-wider mb-4">
+                        <i class="fa-solid fa-sliders text-teal-600"></i>
+                        <span>こだわり設定（空欄のままでスタートしてもOK！）</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-base text-slate-600 mb-2 font-bold tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-bullseye text-teal-500"></i> 1. 目標・実現したいビジョン（こだわり）
+                            </label>
+                            <textarea id="level1Goals" rows="3" 
+                                      class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all resize-none leading-relaxed font-medium"
+                                      placeholder="（例：価格は120円にしたい、AIイラストで作ってみたい、等。空欄でもOK！）"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-base text-slate-600 mb-2 font-bold tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-halved text-teal-500"></i> 2. 前提ルール・把握している制約（こだわり）
+                            </label>
+                            <textarea id="level1Constraints" rows="3" 
+                                      class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all resize-none leading-relaxed font-medium"
+                                      placeholder="（例：スタンプは8枚必要、商用利用可能モデルを使う、等。空欄でもOK！）"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRO REASONING PANEL (Hidden by Default) -->
+                <div id="presetGuideCard" class="hidden bg-teal-50/40 border border-teal-100/80 rounded-2xl p-5 mt-4 shadow-sm fade-in">
+                    <div class="flex items-center gap-2 text-teal-800 font-bold text-xs uppercase tracking-wider mb-3">
+                        <i class="fa-regular fa-lightbulb text-teal-500 text-sm animate-pulse"></i>
+                        <span>プロのこだわり思考プロセス（解説）</span>
+                    </div>
+                    <div id="presetGuideContent" class="text-xs text-slate-600 space-y-3 font-medium leading-relaxed">
+                        <!-- JavaScriptで動的に注入 -->
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-2 uppercase font-bold">デモ動作モード</label>
+                        <select id="runMode" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 font-mono font-medium cursor-pointer">
+                            <option value="live">Live (Gemini API)</option>
+                            <option value="simulated">Simulated (擬似演出)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-2 uppercase font-bold">分析の深さ（情報量）</label>
+                        <select id="analysisDepth" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 font-medium cursor-pointer">
+                            <option value="light">🟢 Light（サクッと大枠のみ）</option>
+                            <option value="standard" selected>🟡 Standard（基本と盲点を網羅）</option>
+                            <option value="pro">🔴 Pro（失敗できない徹底解析）</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mt-4 pt-8 border-t border-slate-100">
+                    <button onclick="saveCurrentProject()" class="py-4 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
+                        <i class="fa-regular fa-floppy-disk"></i>
+                        <span>データをセーブ</span>
+                    </button>
+                    <button id="btnExecute" onclick="startAnalysisEngine()" 
+                            class="py-4 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-xl shadow-md shadow-teal-500/20 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>分析を開始する</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE 2: RESULT VIEW (Full Width) -->
+        <div id="phase2" class="hidden flex-col gap-6 w-full pb-10">
+            <!-- Top controls -->
+            <div class="flex justify-between items-center mb-2">
+                <button onclick="toggleInitialInfo()" class="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors shadow-sm">
+                    <i class="fa-regular fa-eye text-teal-600"></i> 初期入力を確認
+                </button>
+                <button onclick="createNewProject()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-sm font-bold flex items-center gap-2 transition-colors shadow-sm">
+                    <i class="fa-solid fa-rotate-left"></i> 新規プロジェクトに戻る
+                </button>
+            </div>
+
+            <!-- Initial Info Popup -->
+            <div id="initialInfoPopup" class="hidden bg-white border border-slate-200 p-6 rounded-2xl shadow-xl mb-4 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1.5 h-full bg-teal-500"></div>
+                <h4 class="text-xs text-teal-600 font-bold uppercase mb-4 tracking-wider">Initial Inputs</h4>
+                <div class="text-sm text-slate-800 font-bold mb-3">アイデア: <span id="displayIdea" class="font-medium text-slate-600 ml-2"></span></div>
+                <div class="text-sm text-slate-800 font-bold">初期知識: <pre id="displayLevel1" class="font-medium text-slate-600 mt-3 bg-slate-50 p-4 rounded-xl whitespace-pre-wrap font-sans text-xs border border-slate-100 leading-relaxed"></pre></div>
+                <div class="text-sm text-slate-800 font-bold mt-3">分析深度: <span id="displayDepth" class="font-medium text-slate-600 ml-2 uppercase"></span></div>
+            </div>
+
+            <!-- AGENT STATUS PANEL -->
+            <div class="bg-white border border-slate-200 shadow-sm rounded-2xl flex flex-col">
+                <div class="flex items-center gap-3 px-3 py-4 overflow-x-auto">
+                    <span class="text-xs text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap px-3">Agent Status</span>
+                    <div class="flex gap-3 min-w-max">
+                        <div id="stat-1" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-chess-knight"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">戦略分析</span><span class="text-xs text-indigo-500 font-mono font-bold" id="stat-text-1">STRATEGY</span></div></div>
+                        <div id="stat-2" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-ruler-combined"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">仕様監査</span><span class="text-xs text-cyan-500 font-mono font-bold" id="stat-text-2">TECH</span></div></div>
+                        <div id="stat-3" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-pen-nib"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">意匠設計</span><span class="text-xs text-purple-500 font-mono font-bold" id="stat-text-3">DESIGN</span></div></div>
+                        <div id="stat-4" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-chart-line"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">収益モデリング</span><span class="text-xs text-amber-500 font-mono font-bold" id="stat-text-4">BUSINESS</span></div></div>
+                        <div id="stat-5" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-filter"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">要件抽出</span><span class="text-xs text-emerald-500 font-mono font-bold" id="stat-text-5">COMPILER</span></div></div>
+                        <div id="stat-6" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">選択肢生成</span><span class="text-xs text-rose-500 font-mono font-bold" id="stat-text-6">WIZARD</span></div></div>
+                    </div>
+                </div>
+                <!-- GLOBAL STATUS INDICATOR -->
+                <div id="currentGlobalStatus" class="hidden items-start gap-3 px-5 py-3 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl">
+                    <i class="fa-solid fa-circle-notch fa-spin text-teal-500 text-xl mr-3 mt-0.5"></i>
+                    <span id="currentGlobalStatusText" class="text-sm font-extrabold text-teal-700 tracking-wide break-words leading-snug w-full">...</span>
+                </div>
+            </div>
+
+            <!-- TABS & OUTPUT FRAMEWORK -->
+            <div id="tabFramework" class="flex-grow bg-white border border-slate-200 shadow-sm rounded-2xl flex flex-col">
+                <!-- Tab Headers -->
+                <div class="sticky top-0 z-30 flex justify-between items-center bg-slate-50/95 backdrop-blur-md px-2 py-0 border-b border-slate-200 overflow-x-auto rounded-t-2xl">
+                    <div class="flex items-center min-w-max">
+                        <button id="tabTerminal" onclick="switchTab('terminal')" class="tab-btn active">
+                            <span class="step-num"><span>1</span></span> DEBATE LOG
+                        </button>
+                        <button id="tabDiscovery" onclick="switchTab('discovery')" class="tab-btn hidden">
+                            <i class="fa-solid fa-chevron-right text-slate-300 mr-4 text-xs font-normal"></i>
+                            <span class="step-num"><span>2</span></span> DISCOVERY (発見)
+                            <span id="discoveryReadyBadge" class="hidden absolute top-3 right-3 h-2.5 w-2.5 bg-teal-500 rounded-full animate-ping"></span>
+                        </button>
+                        <button id="tabWizard" onclick="switchTab('wizard')" class="tab-btn hidden relative">
+                            <i class="fa-solid fa-chevron-right text-slate-300 mr-4 text-xs font-normal"></i>
+                            <span class="step-num"><span>3</span></span> WIZARD (組み立て)
+                            <span id="wizardReadyBadge" class="hidden absolute top-3 right-3 h-2.5 w-2.5 bg-teal-500 rounded-full animate-ping"></span>
+                        </button>
+                        <button id="tabOutput" onclick="switchTab('output')" class="tab-btn hidden">
+                            <i class="fa-solid fa-chevron-right text-slate-300 mr-4 text-xs font-normal"></i>
+                            <span class="step-num"><span>4</span></span> FINAL PROMPT
+                        </button>
+                    </div>
+                    <div class="flex gap-3 ml-4 py-2 pr-3 relative z-10">
+                        <button onclick="copyGeneratedPrompt()" class="px-4 py-2 text-xs bg-white text-slate-600 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors font-bold font-mono shadow-sm flex items-center whitespace-nowrap">
+                            <i class="fa-regular fa-copy mr-2"></i> COPY PROMPT
+                        </button>
+                    </div>
+                </div>
+                <!-- Stepper Progress Bar -->
+                <div class="relative w-full h-1 bg-slate-100 shrink-0">
+                    <div id="tabProgressBar" class="absolute top-0 left-0 h-full bg-teal-500 transition-all duration-500 shadow-[0_0_8px_rgba(20,184,166,0.5)]" style="width: 25%;"></div>
+                </div>
+
+                <!-- TAB 1: DEBATE LOG (TUTORIAL) -->
+                <div id="terminalArea" class="flex-grow relative overflow-hidden py-4 md:py-6 px-4 bg-slate-50 gradient-bg-light flex flex-col items-center justify-start md:justify-center min-h-[460px]">
+                    
+                    <!-- Tutorial Content -->
+                    <div class="relative z-10 w-full px-4 md:px-10 text-center flex flex-col items-center">
+                        <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white border border-teal-200 text-teal-600 flex items-center justify-center shadow-md mb-3 md:mb-4 relative">
+                            <div class="absolute inset-0 rounded-full border-4 border-teal-100 animate-ping opacity-50"></div>
+                            <i class="fa-solid fa-cube text-xl md:text-2xl animate-pulse"></i>
+                        </div>
+                        <h3 class="text-teal-600 text-xs md:text-xs font-extrabold tracking-[0.2em] mb-1 md:mb-2 drop-shadow-sm">VIRTUAL COMMITTEE ENGINE ONLINE</h3>
+                        
+                        <div class="text-center max-w-3xl blur-in">
+                            <h1 class="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-slate-800 mb-3 md:mb-4 leading-normal tracking-tight break-keep">
+                                プロジェクトの成否を決める『前提条件』をセットアップしています...
+                            </h1>
+                        </div>
+                        
+                        <div class="delayed-fade-in bg-white/80 border border-slate-200/50 rounded-2xl p-4 md:p-5 lg:p-6 backdrop-blur-md max-w-2xl w-full text-left mx-auto shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)]">
+                            <p class="text-slate-700 font-bold text-sm md:text-base mb-3 leading-relaxed">
+                                4人の専門AIが、あなたのアイデアを多角的に検証中です。<br>まもなく、次の2つのインサイトが提示されます。
+                            </p>
+                            <div class="space-y-2 mb-4 bg-slate-50 rounded-xl p-3 md:p-4 border border-slate-100">
+                                <div class="flex items-center gap-2.5 text-slate-800 font-extrabold text-sm md:text-base">
+                                    <div class="w-7 h-7 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shadow-sm shrink-0"><i class="fa-solid fa-check text-xs"></i></div> 
+                                    開発前に絶対に固めるべき【必須要件】
+                                </div>
+                                <div class="flex items-center gap-2.5 text-slate-800 font-extrabold text-sm md:text-base">
+                                    <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shadow-sm shrink-0"><i class="fa-solid fa-lightbulb text-xs"></i></div> 
+                                    プロだけが知っている【見落としがちなポイント】
+                                </div>
+                            </div>
+                            <p class="text-slate-600 font-bold text-xs md:text-sm leading-relaxed">
+                                抽出された要件の「担当AIのスタンプ」に注目し、<br>アイデアを完璧な状態で起動（PRE-PUT）する準備を整えましょう。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Error Recovery Card (Hidden by Default) -->
+                    <div id="debateErrorCard" class="hidden relative z-20 bg-white/95 border-2 border-red-200 rounded-3xl p-6 md:p-8 max-w-xl w-full text-center shadow-2xl backdrop-blur-md fade-in my-auto">
+                        <div class="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                            <i class="fa-solid fa-circle-exclamation text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">分析エンジンでエラーが発生しました</h3>
+                        <p id="debateErrorMessage" class="text-sm text-slate-500 mb-6 leading-relaxed whitespace-pre-wrap">APIキーのエラーまたはアクセス制限が発生しました。</p>
+                        
+                        <div class="flex flex-col gap-3">
+                            <button onclick="retryLiveAnalysis()" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-sm font-bold shadow-md transition-all">
+                                <i class="fa-solid fa-rotate-left mr-2"></i> APIキーで再試行する
+                            </button>
+                            <button onclick="switchToSimulatedModeAndProceed()" class="w-full py-3.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-bold shadow-md transition-all">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> デモモード（擬似演出）に切り替えて進む
+                            </button>
+                            <button onclick="createNewProject()" class="w-full py-3.5 bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl text-sm font-bold transition-all">
+                                新規入力画面に戻る
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Floating Terminal Widget -->
+                    <div id="logWidget" class="absolute bottom-8 right-8 w-[500px] bg-slate-900/90 border border-slate-700 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 translate-y-[120%] backdrop-blur-md z-50">
+                        <div class="flex items-center justify-between px-4 py-3 bg-slate-800/80 border-b border-slate-700 cursor-pointer" onclick="toggleLogWidget()">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-terminal text-slate-400 text-sm"></i>
+                                <span class="text-xs font-bold text-slate-300">SYSTEM.LOG</span>
+                            </div>
+                            <button class="text-slate-400 hover:text-white"><i class="fa-solid fa-chevron-down"></i></button>
+                        </div>
+                        <div id="consoleLog" class="h-48 overflow-y-auto p-4 code-font text-xs leading-relaxed text-slate-300"></div>
+                    </div>
+
+                    <!-- Open Log Button -->
+                    <button onclick="toggleLogWidget()" class="absolute bottom-8 right-8 px-6 py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-full text-slate-600 hover:text-teal-600 text-sm font-extrabold transition-all flex items-center gap-3 shadow-lg z-40">
+                        <i class="fa-solid fa-terminal"></i> 処理ログを表示
+                    </button>
+                </div>
+
+                <!-- TAB 2: DISCOVERY REPORT -->
+                <div id="discoveryArea" class="hidden flex-grow p-8 overflow-visible bg-slate-50 text-slate-700 relative">
+                    <div class="max-w-4xl mx-auto w-full fade-in pb-10">
+                        <div class="text-center mb-10">
+                            <h3 class="text-3xl font-extrabold text-slate-900 mb-3">解くべき前提条件とプロの盲点</h3>
+                            <p class="text-base text-slate-600 font-medium">エージェントが議論の末に洗い出した、プロジェクト開始前に確定させるべき項目です。</p>
+                        </div>
+
+                        <!-- Extracted Variables -->
+                        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md mb-8">
+                            <h4 class="text-xl font-bold text-teal-700 mb-6 flex items-center border-b border-slate-100 pb-4"><i class="fa-solid fa-cube mr-3"></i> 1階部分：必須基礎確定要件</h4>
+                            <div id="discoveryVariablesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Discovery items injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Extracted Traps -->
+                        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md mb-10">
+                            <h4 class="text-xl font-bold text-rose-700 mb-6 flex items-center border-b border-slate-100 pb-4"><i class="fa-solid fa-lightbulb mr-3"></i> 2階部分：プロの視点（見落としがちな重要ポイント）</h4>
+                            <div id="discoveryTrapsList" class="space-y-4">
+                                <!-- Trap items injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row justify-center items-center gap-6 border-t border-slate-200 pt-10">
+                            <button onclick="openSaveModal()" class="px-8 py-4 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 rounded-xl text-base font-bold transition-all w-full sm:w-auto">
+                                <i class="fa-solid fa-floppy-disk mr-2"></i> セーブして終了する
+                            </button>
+                            <button onclick="startWizardBuilder()" class="px-8 py-4 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-base font-extrabold shadow-lg shadow-teal-500/30 transition-all transform hover:-translate-y-1 w-full sm:w-auto">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> プロンプト組み立て（ウィザード）に進む
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: DYNAMIC WIZARD (Form) -->
+                <div id="wizardArea" class="hidden flex-grow p-8 overflow-visible bg-white text-slate-700 relative">
+                    
+                    <!-- Loading State for Builder -->
+                    <div id="wizardLoadingState" class="hidden w-full min-h-[400px] bg-white flex-col items-center justify-center fade-in">
+                        <i class="fa-solid fa-wand-magic-sparkles text-5xl text-rose-500 mb-6 animate-pulse"></i>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Form Builder AI 起動中...</h3>
+                        <p class="text-sm text-slate-500">あなたのプロジェクト専用の「具体的な選択肢」を生成しています。</p>
+                    </div>
+
+                    <!-- WIZARD UI -->
+                    <div id="wizardContainer" class="hidden max-w-3xl mx-auto w-full fade-in pb-10">
+                        <div class="flex justify-between items-center mb-8">
+                            <button id="btnWizardBack" onclick="wizardBack()" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all hidden"><i class="fa-solid fa-arrow-left mr-2"></i>前の質問へ</button>
+                            <span id="wizardProgress" class="text-sm font-bold text-teal-600 bg-teal-50 px-4 py-2 rounded-full border border-teal-100 ml-auto">Step 1 / 5</span>
+                        </div>
+
+                        <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-xl mb-8">
+                            <h3 id="wizardQuestionLabel" class="text-2xl font-extrabold text-slate-900 mb-3 leading-tight">質問</h3>
+                            <p id="wizardQuestionDesc" class="text-base text-slate-500 mb-10 font-medium">詳細</p>
+                            
+                            <!-- Detected Initial Hope Alert -->
+                            <div id="wizardInitialHopeAlert" class="hidden mb-8"></div>
+
+                            <div id="wizardOptions" class="grid grid-cols-1 gap-4 mb-8">
+                                <!-- Options dynamically injected -->
+                            </div>
+
+                            <div class="border-t border-slate-100 pt-8">
+                                <label class="block text-sm text-slate-600 font-bold mb-3">自由に入力する（オリジナル案）</label>
+                                <div class="flex gap-3">
+                                    <input type="text" id="wizardCustomInput" class="flex-grow px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 text-base font-medium text-slate-800" placeholder="自由に入力...">
+                                    <button onclick="wizardNextWithCustom()" class="px-8 py-4 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-base font-bold shadow-md whitespace-nowrap transition-all">決定</button>
+                                </div>
+                                
+                                <div class="mt-8 flex flex-col items-center">
+                                    <button onclick="wizardNextWithUnknown()" class="px-8 py-3.5 border-2 border-slate-200 text-slate-500 hover:text-slate-800 hover:border-slate-300 hover:bg-slate-50 rounded-full text-sm font-bold transition-all"><i class="fa-regular fa-circle-question mr-2"></i>今は未定にする（後でAIに相談する）</button>
+                                    <p class="mt-3 text-xs text-slate-400 font-medium tracking-wide">※未定にした項目は最後のページでリストアップされ、後でAIからの提案を見ながら決めることができます。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DEEP VARS REVIEW UI -->
+                    <div id="deepVarsContainerUI" class="hidden max-w-4xl mx-auto w-full fade-in pb-10">
+                        <div class="text-center mb-8">
+                            <span class="inline-block px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-bold mb-3">FINAL STEP</span>
+                            <h3 class="text-2xl font-extrabold text-slate-900 mb-2">プロの視点（見落としポイント）の適用</h3>
+                            <p class="text-base text-slate-600 font-bold">抽出された重要ポイントや対策をプロンプトに組み込みます。<br>必要なものにチェックを入れてください。</p>
+                        </div>
+                        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg">
+                            <!-- 初心者向けのアドバイスカード -->
+                            <div class="mb-6 p-5 bg-amber-50/70 border border-amber-200/60 rounded-2xl flex items-start gap-3.5 text-left">
+                                <div class="w-9 h-9 rounded-xl bg-amber-100/80 text-amber-600 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                                    <i class="fa-solid fa-lightbulb text-base"></i>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <span class="text-sm font-black text-amber-900 tracking-wide flex items-center gap-1.5">
+                                        💡 初心者・初めて制作される方へのアドバイス
+                                    </span>
+                                    <p class="text-xs sm:text-sm text-amber-800 leading-relaxed font-bold">
+                                        初期状態では安全のため、すべてのチェックを<strong>【オフ】</strong>にしています。最初の一歩目から難しい内容をAIに多く指示しすぎると、<strong>AIの注意が分散してしまい、的外れな回答になるリスク</strong>があります。<br>
+                                        まずは、最も重要だと思う<strong>【1〜2点】のみに厳選してチェックを入れて</strong>プロンプトを生成し、残りのポイントはプロジェクトが進んだ段階で徐々に組み込んでいくことを強くおすすめします！
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4" id="deepVariablesList">
+                                <!-- Checkboxes -->
+                            </div>
+                            <div class="mt-10 flex justify-center border-t border-slate-100 pt-8">
+                                <button onclick="finishWizard()" class="px-10 py-5 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl text-lg font-extrabold shadow-xl shadow-teal-500/20 transition-all transform hover:-translate-y-1">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> 最終プロンプトを生成する
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TAB 4: COMPILED FINAL PROMPT -->
+                <div id="outputArea" class="hidden flex-grow p-6 md:p-8 overflow-y-auto bg-slate-50 text-slate-800 rounded-b-2xl flex flex-col gap-6">
+                    
+                    <!-- Style Selector Panel (Glassmorphism) -->
+                    <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col gap-5">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="h-8 w-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                                    <i class="fa-solid fa-sliders text-sm"></i>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-slate-500 font-bold uppercase tracking-wider">Prompt Tuning</span>
+                                    <span class="text-sm font-extrabold text-slate-800">生成プロンプトの共創スタイルを選択</span>
+                                </div>
+                            </div>
+                            <span class="text-xs bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-bold self-start md:self-auto border border-slate-200 font-mono">Real-time Compiler Active</span>
+                        </div>
+
+                        <!-- Buttons grid -->
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <button onclick="setPromptStyle('pm')" id="btn-style-pm" class="relative pt-8 p-4 rounded-xl border text-left transition-all duration-200 flex flex-col gap-1.5 cursor-pointer bg-white">
+                                <!-- おすすめ案内バッジ -->
+                                <span class="absolute top-2 left-2.5 px-2 py-0.5 rounded text-xs font-black uppercase tracking-wider bg-indigo-100 text-indigo-700 border border-indigo-200/50 shadow-sm">👑 初心者・迷ったらこれ！</span>
+                                <div class="flex items-center gap-2 font-bold text-xs">
+                                    <i class="fa-solid fa-chess-knight"></i>
+                                    <span>👔 PM・段取り型</span>
+                                    <!-- ❓ ツールチップ -->
+                                    <div class="tooltip-container ml-1">
+                                        <i class="fa-regular fa-circle-question text-slate-400 hover:text-slate-600 cursor-help"></i>
+                                        <div class="tooltip-box">
+                                            <div class="font-bold text-teal-400 mb-1">👔 PM・段取り型 (PM Style)</div>
+                                            <div class="text-xs text-slate-400 mb-2">プロジェクト進行の骨組み作りに適しています。</div>
+                                            <div class="border-t border-slate-700/60 pt-1.5 text-xs text-slate-300">
+                                                <strong>🎯 合う内容の一覧:</strong><br>
+                                                ・LINEスタンプ制作スケジュール設計<br>
+                                                ・開発スケジュール、優先順位ToDo整理<br>
+                                                ・マイルストーンや具体的アクションプラン
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold leading-normal text-slate-500">工程設計・ToDo整理</span>
+                            </button>
+                            <button onclick="setPromptStyle('creator')" id="btn-style-creator" class="relative pt-8 p-4 rounded-xl border text-left transition-all duration-200 flex flex-col gap-1.5 cursor-pointer bg-white">
+                                <!-- おすすめ案内バッジ -->
+                                <span class="absolute top-2 left-2.5 px-2 py-0.5 rounded text-xs font-black uppercase tracking-wider bg-purple-100 text-purple-700 border border-purple-200/50 shadow-sm">💡 とりあえず形にしたい人向け！</span>
+                                <div class="flex items-center gap-2 font-bold text-xs">
+                                    <i class="fa-solid fa-pen-nib"></i>
+                                    <span>🎨 クリエイター型</span>
+                                    <!-- ❓ ツールチップ -->
+                                    <div class="tooltip-container ml-1">
+                                        <i class="fa-regular fa-circle-question text-slate-400 hover:text-slate-600 cursor-help"></i>
+                                        <div class="tooltip-box">
+                                            <div class="font-bold text-teal-400 mb-1">🎨 クリエイター型 (Creator Style)</div>
+                                            <div class="text-xs text-slate-400 mb-2">ブレストや具体的なアイデアの創出に適しています。</div>
+                                            <div class="border-t border-slate-700/60 pt-1.5 text-xs text-slate-300">
+                                                <strong>🎯 合う内容の一覧:</strong><br>
+                                                ・キャラクター名やスタンプのセリフ案<br>
+                                                ・デザイン構成、イラスト作画案のブレスト<br>
+                                                ・キャッチコピーや文章（下書き）の作成
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold leading-normal text-slate-500">アイデア・ドラフト作成</span>
+                            </button>
+                            <button onclick="setPromptStyle('auditor')" id="btn-style-auditor" class="relative pt-8 p-4 rounded-xl border text-left transition-all duration-200 flex flex-col gap-1.5 cursor-pointer bg-white">
+                                <!-- おすすめ案内バッジ -->
+                                <span class="absolute top-2 left-2.5 px-2 py-0.5 rounded text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 border border-emerald-200/50 shadow-sm">⚠️ 仕上げ・リスク予防用！</span>
+                                <div class="flex items-center gap-2 font-bold text-xs">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span>🔍 監査・アドバイザー型</span>
+                                    <!-- ❓ ツールチップ -->
+                                    <div class="tooltip-container ml-1">
+                                        <i class="fa-regular fa-circle-question text-slate-400 hover:text-slate-600 cursor-help"></i>
+                                        <div class="tooltip-box">
+                                            <div class="font-bold text-teal-400 mb-1">🔍 監査・アドバイザー型 (Auditor Style)</div>
+                                            <div class="text-xs text-slate-400 mb-2">公開前の最終チェックやリスク予防に適しています。</div>
+                                            <div class="border-t border-slate-700/60 pt-1.5 text-xs text-slate-300">
+                                                <strong>🎯 合う内容の一覧:</strong><br>
+                                                ・LINE公式審査規約や著作権侵害の確認<br>
+                                                ・AI商用利用規約やセキュリティ対策<br>
+                                                ・初心者が自滅する「罠・盲点」の予防監査
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold leading-normal text-slate-500">リスク・品質の予防監査</span>
+                            </button>
+                            <button onclick="setPromptStyle('custom')" id="btn-style-custom" class="relative pt-8 p-4 rounded-xl border text-left transition-all duration-200 flex flex-col gap-1.5 cursor-pointer bg-white">
+                                <!-- おすすめ案内バッジ -->
+                                <span class="absolute top-2 left-2.5 px-2 py-0.5 rounded text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200/50 shadow-sm">🔧 完全オリジナル・上級者向け</span>
+                                <div class="flex items-center gap-2 font-bold text-xs">
+                                    <i class="fa-solid fa-keyboard text-amber-500"></i>
+                                    <span>✍️ 自由カスタマイズ型</span>
+                                    <!-- ❓ ツールチップ -->
+                                    <div class="tooltip-container ml-1">
+                                        <i class="fa-regular fa-circle-question text-slate-400 hover:text-slate-600 cursor-help"></i>
+                                        <div class="tooltip-box">
+                                            <div class="font-bold text-amber-400 mb-1">✍️ 自由カスタマイズ型 (Custom Style)</div>
+                                            <div class="text-xs text-slate-400 mb-2">自分独自の要件や指示の追加に適しています。</div>
+                                            <div class="border-t border-slate-700/60 pt-1.5 text-xs text-slate-300">
+                                                <strong>🎯 合う内容の一覧:</strong><br>
+                                                ・「回答は必ず表形式で行う」などの指定<br>
+                                                ・特定のトーン・口調やフォーマット of the view の指定<br>
+                                                ・自分だけのこだわり条件を流し込む
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold leading-normal text-slate-500">独自の追加指示を付与</span>
+                            </button>
+                        </div>
+
+                        <!-- Dynamic Explanation and Recommended Tasks Card (Glassmorphic) -->
+                        <div id="styleGuidePanel" class="p-5 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-3 font-sans transition-all duration-300">
+                            <!-- Injected dynamically -->
+                        </div>
+
+                        <!-- Collapsible Custom Instructions Text Area -->
+                        <div id="customInstructionsWrapper" class="hidden flex-col gap-3 mt-3">
+                            <!-- テンプレート保存・選択ヘッダー -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 shadow-sm">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-floppy-disk text-teal-600 text-sm"></i>
+                                    <span class="text-xs font-black text-slate-700">マイテンプレート</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <select id="customTemplateSelect" onchange="loadCustomTemplate(this.value)" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer max-w-[150px] truncate shadow-sm">
+                                        <option value="">-- 保存データを選択 --</option>
+                                    </select>
+                                    <button onclick="saveCustomTemplate()" class="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-extrabold shadow-sm transition-all flex items-center gap-1 shrink-0">
+                                        <i class="fa-solid fa-plus text-xs"></i> 保存
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- ワンタップ追加指示チップ -->
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="insertCustomPresetText('回答は必ず【マークダウンの表形式（Table）】を用いて整理してください。')" class="px-2.5 py-1 bg-white border border-slate-200 hover:border-teal-400 hover:bg-teal-50 text-slate-600 hover:text-teal-700 rounded-full text-xs font-bold transition-all shadow-sm">
+                                    📊 表形式で整理
+                                </button>
+                                <button onclick="insertCustomPresetText('小学生でも直感的に理解できるように、専門用語を一切使わず、身近な例え話を用いて説明してください。')" class="px-2.5 py-1 bg-white border border-slate-200 hover:border-teal-400 hover:bg-teal-50 text-slate-600 hover:text-teal-700 rounded-full text-xs font-bold transition-all shadow-sm">
+                                    🏫 小学生向け解説
+                                </button>
+                                <button onclick="insertCustomPresetText('重要な専門用語や指示には、必ず【英語の対訳（英単語）】を括弧書きで併記してください。')" class="px-2.5 py-1 bg-white border border-slate-200 hover:border-teal-400 hover:bg-teal-50 text-slate-600 hover:text-teal-700 rounded-full text-xs font-bold transition-all shadow-sm">
+                                    🇬🇧 英語併記
+                                </button>
+                                <button onclick="insertCustomPresetText('要点を3つの重要な箇条書きに絞り込み、それぞれに対して具体的なアクションToDoを1行ずつ明記してください。')" class="px-2.5 py-1 bg-white border border-slate-200 hover:border-teal-400 hover:bg-teal-50 text-slate-600 hover:text-teal-700 rounded-full text-xs font-bold transition-all shadow-sm">
+                                    📝 3点箇条書き＆ToDo
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between mt-1">
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
+                                    <span>✍️ 独自の追加指示（自由記入）</span>
+                                </label>
+                                <span class="text-xs text-teal-600 bg-teal-50 px-2 py-0.5 rounded font-bold">リアルタイム同期中</span>
+                            </div>
+                            <textarea id="customInstructionsInput" oninput="updateCustomInstructions(this.value)" rows="3" 
+                                      class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/20 transition-all font-mono resize-none leading-relaxed placeholder-slate-400"
+                                      placeholder="（例）回答は必ず表形式で出力してください。/ プロ向けの専門用語を多めに使用してください。/ 小学生向けにわかりやすく解説してください。"></textarea>
+                            <p class="text-xs text-slate-400 font-medium pl-1 leading-relaxed">※入力した追加指示は、最終プロンプトの末尾にリアルタイムでマージされます。</p>
+                        </div>
+                    </div>
+
+                    <!-- Glowing Final Prompt Display Card -->
+                    <div class="relative group bg-white border border-slate-200 rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+                        <!-- Glow effect -->
+                        <div class="absolute -inset-[1px] bg-gradient-to-r from-teal-500/10 to-blue-500/10 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500 pointer-events-none"></div>
+                        
+                        <div class="relative flex items-center justify-between px-5 py-3.5 bg-slate-50 border-b border-slate-200 rounded-t-2xl z-10 shrink-0">
+                            <span class="text-xs font-bold text-slate-500 tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-code text-teal-600 text-sm"></i>
+                                <span>COMPILED_PROMPT.MD <span class="text-xs text-teal-600 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md font-bold ml-2 shadow-sm">✏️ 直接編集・調整OK</span></span>
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="saveCurrentProject()" class="px-4.5 py-2 text-xs bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg transition-all font-extrabold flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-regular fa-floppy-disk text-slate-500"></i> プロジェクトを保存
+                                </button>
+                                <button onclick="copyGeneratedPrompt()" class="px-4.5 py-2 text-xs bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-all font-extrabold flex items-center gap-1.5 shadow-md shadow-teal-500/10">
+                                    <i class="fa-regular fa-copy text-sm"></i> コピーする
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="relative z-10 p-5 bg-white flex-grow rounded-b-2xl min-h-[800px] flex flex-col gap-4">
+                            <!-- Undecided Memo Area -->
+                            <div id="undecidedMemoArea" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4 shadow-sm shrink-0">
+                                <h4 class="text-sm font-bold text-amber-800 flex items-center gap-2 mb-2"><i class="fa-solid fa-list-check"></i> 後で決めるToDoメモ（未定項目）</h4>
+                                <p class="text-xs text-amber-700/80 mb-3 font-medium">※これらはAIには伝えず、後で決めるための備忘録としてここに表示しています。</p>
+                                <ul id="undecidedList" class="text-sm text-amber-900 space-y-1.5 pl-2 font-bold tracking-wide">
+                                </ul>
+                            </div>
+                            
+                            <textarea id="finalPromptResult" class="w-full flex-grow bg-transparent border-none text-slate-700 focus:outline-none resize-y leading-relaxed font-mono text-base md:text-lg font-bold whitespace-pre-wrap selection:bg-teal-500/20" placeholder="ここに極上の指示プロンプトが編纂されます。直接自由に編集も可能です。">ここに極上の指示プロンプトが編纂されます。</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Progress Bar -->
+                <div class="h-1.5 bg-slate-100 relative mt-auto overflow-hidden">
+                    <div id="progressBar" class="h-full bg-teal-500 w-0 transition-all duration-500 ease-out shadow-[0_0_10px_rgba(20,184,166,0.8)] relative">
+                        <div class="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TOAST CONTAINERS -->
+    <div id="toastContainer" class="fixed bottom-8 right-8 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- FLOATING HELP WIDGET -->
+    <div class="fixed bottom-24 right-8 z-40 flex flex-col items-end gap-4 pointer-events-none">
+        <div id="helpPopover" class="pointer-events-auto w-[320px] bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-2xl transition-all duration-300 translate-y-4 opacity-0 pointer-events-none hidden">
+            <div class="flex justify-between items-start mb-3 border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-circle-info text-teal-500"></i> コンテキスト・ヘルプ
+                </h3>
+                <button onclick="toggleHelp()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p id="helpDescription" class="text-xs text-slate-600 leading-relaxed font-medium mb-3">
+                現在「プロジェクト構成」フェーズです。
+            </p>
+            <div class="bg-teal-50/50 p-3 rounded-xl border border-teal-100">
+                <h4 class="text-xs font-bold text-teal-800 mb-2 flex items-center"><i class="fa-regular fa-lightbulb text-amber-500 mr-1.5"></i> ワンポイント</h4>
+                <ul id="helpTipsList" class="text-xs text-slate-600 space-y-1.5 list-disc list-inside font-medium leading-relaxed">
+                    <li>ヒントをここに表示します。</li>
+                </ul>
+            </div>
+        </div>
+        
+        <button onclick="toggleHelp()" class="pointer-events-auto w-12 h-12 bg-white border border-slate-200 text-slate-600 hover:text-teal-600 hover:border-teal-300 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105">
+            <i class="fa-solid fa-question text-lg"></i>
+        </button>
+    </div>
+
+    <!-- SAVE CONFIRM MODAL -->
+    <div id="saveConfirmModal" class="hidden absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-slate-200 transform scale-95 opacity-0 transition-all duration-200" id="saveConfirmContent">
+            <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mb-6 shadow-sm mx-auto">
+                <i class="fa-regular fa-floppy-disk text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-extrabold text-slate-900 text-center mb-2">分析結果をセーブしますか？</h3>
+            
+            <div class="bg-slate-50 rounded-xl p-5 mb-6 mt-6 border border-slate-100">
+                <h4 class="text-sm font-bold text-slate-700 mb-3 flex items-center"><i class="fa-solid fa-star text-amber-400 mr-2"></i> セーブするメリット</h4>
+                <ul class="text-sm text-slate-600 space-y-3 font-medium">
+                    <li class="flex items-start"><i class="fa-solid fa-check text-teal-500 mt-0.5 mr-2"></i> 抽出された重要ポイントや条件を後からいつでも見直せます。</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-teal-500 mt-0.5 mr-2"></i> 次回、最初からやり直すことなく「ウィザード（組み立て）」から再開できます。</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-teal-500 mt-0.5 mr-2"></i> 別のプロジェクトを考える際の比較や参考データになります。</li>
+                </ul>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <button onclick="confirmSaveAndFinish()" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-sm font-extrabold shadow-md transition-all transform hover:-translate-y-0.5">セーブして新規画面に戻る</button>
+                <button onclick="closeSaveModal()" class="w-full py-3.5 bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 rounded-xl text-sm font-bold transition-all">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    
+    
+    <!-- 常に表示される文字サイズコントローラー -->
+    <div class="fixed bottom-6 left-6 z-50 flex flex-col gap-2">
+        <div class="flex flex-col gap-1 bg-white/90 backdrop-blur-md p-2 rounded-xl border border-slate-200 shadow-lg shrink-0 transition-all hover:shadow-xl group">
+            <span class="text-xs font-black text-slate-400 px-1 uppercase tracking-wider flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-font"></i> 文字サイズ</span>
+            <div class="flex gap-1">
+                <button id="btn-font-medium" onclick="setGlobalFontSize('medium')" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer bg-teal-50 border-teal-200 text-teal-600">標準</button>
+                <button id="btn-font-large" onclick="setGlobalFontSize('large')" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer bg-white border-slate-200 text-slate-600 hover:bg-slate-50">大</button>
+                <button id="btn-font-xl" onclick="setGlobalFontSize('xl')" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer bg-white border-slate-200 text-slate-600 hover:bg-slate-50">特大</button>
+            </div>
+        </div>
+    </div>
+<script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo A: War Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .node-pulse { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+        .data-stream {
+            position: absolute; width: 4px; height: 4px; background: #818cf8; border-radius: 50%;
+            box-shadow: 0 0 10px 2px #818cf8; animation: stream 1.5s linear infinite; opacity: 0;
+        }
+        @keyframes stream {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(100px, 50px) scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 h-screen flex flex-col items-center justify-center overflow-hidden font-sans relative">
+    <!-- Header -->
+    <div class="absolute top-8 left-8 text-white">
+        <h2 class="text-2xl font-bold tracking-widest text-slate-200">IDEA A: WAR ROOM NETWORK</h2>
+        <p class="text-slate-400 mt-2 text-sm">エージェントが中央コアにデータを送信し合う円卓会議のビジュアル</p>
+    </div>
+
+    <!-- Center Core -->
+    <div class="relative w-[400px] h-[400px] flex items-center justify-center">
+        <!-- Lines connecting -->
+        <svg class="absolute inset-0 w-full h-full" style="z-index: 0;">
+            <!-- Top Left to Center -->
+            <line x1="80" y1="80" x2="200" y2="200" stroke="#334155" stroke-width="2" stroke-dasharray="4 4" />
+            <!-- Top Right to Center -->
+            <line x1="320" y1="80" x2="200" y2="200" stroke="#334155" stroke-width="2" stroke-dasharray="4 4" />
+            <!-- Bottom Left to Center -->
+            <line x1="80" y1="320" x2="200" y2="200" stroke="#334155" stroke-width="2" stroke-dasharray="4 4" />
+            <!-- Bottom Right to Center -->
+            <line x1="320" y1="320" x2="200" y2="200" stroke="#334155" stroke-width="2" stroke-dasharray="4 4" />
+        </svg>
+
+        <!-- Core -->
+        <div class="relative z-10 w-24 h-24 bg-slate-800 rounded-full border-4 border-slate-700 flex items-center justify-center shadow-[0_0_30px_rgba(20,184,166,0.2)]">
+            <i class="fa-solid fa-cube text-3xl text-teal-500 animate-pulse"></i>
+        </div>
+
+        <!-- Nodes -->
+        <!-- Strategy (Active) -->
+        <div class="absolute top-10 left-10 z-10 flex flex-col items-center">
+            <div class="w-16 h-16 bg-indigo-900 rounded-full border-2 border-indigo-400 flex items-center justify-center node-pulse text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.5)] relative">
+                <i class="fa-solid fa-chess-knight text-2xl"></i>
+                <!-- Particles -->
+                <div class="data-stream" style="top: 50%; left: 100%;"></div>
+                <div class="data-stream" style="top: 70%; left: 80%; animation-delay: 0.5s;"></div>
+            </div>
+            <span class="text-indigo-300 text-xs font-bold mt-3 tracking-widest bg-indigo-950/50 px-2 py-1 rounded">STRATEGY</span>
+        </div>
+
+        <!-- Technical (Idle) -->
+        <div class="absolute top-10 right-10 z-10 flex flex-col items-center opacity-50">
+            <div class="w-16 h-16 bg-slate-800 rounded-full border-2 border-slate-600 flex items-center justify-center text-slate-500">
+                <i class="fa-solid fa-ruler-combined text-2xl"></i>
+            </div>
+            <span class="text-slate-500 text-xs font-bold mt-3 tracking-widest">TECH</span>
+        </div>
+
+        <!-- Design (Idle) -->
+        <div class="absolute bottom-10 left-10 z-10 flex flex-col items-center opacity-50">
+            <div class="w-16 h-16 bg-slate-800 rounded-full border-2 border-slate-600 flex items-center justify-center text-slate-500">
+                <i class="fa-solid fa-pen-nib text-2xl"></i>
+            </div>
+            <span class="text-slate-500 text-xs font-bold mt-3 tracking-widest">DESIGN</span>
+        </div>
+
+        <!-- Business (Idle) -->
+        <div class="absolute bottom-10 right-10 z-10 flex flex-col items-center opacity-50">
+            <div class="w-16 h-16 bg-slate-800 rounded-full border-2 border-slate-600 flex items-center justify-center text-slate-500">
+                <i class="fa-solid fa-chart-line text-2xl"></i>
+            </div>
+            <span class="text-slate-500 text-xs font-bold mt-3 tracking-widest">BUSINESS</span>
+        </div>
+    </div>
+
+    <!-- Terminal Widget -->
+    <div class="absolute bottom-8 w-[600px] h-32 bg-black/50 border border-slate-800 rounded-xl p-4 font-mono text-xs overflow-hidden backdrop-blur-sm">
+        <div class="flex items-center gap-2 mb-2 border-b border-slate-800 pb-2">
+            <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+            <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+            <div class="w-2 h-2 rounded-full bg-teal-500"></div>
+            <span class="text-slate-500 ml-2">SYSTEM.LOG</span>
+        </div>
+        <div class="text-slate-400 opacity-50">[00:00:01] 仮想委員会を起動しました。</div>
+        <div class="text-slate-400 opacity-70">[00:00:02] プロジェクト・コアの前提条件を展開中...</div>
+        <div class="text-indigo-400">[00:00:03] [STRATEGY] 市場規模とターゲット層の乖離を分析しています...</div>
+        <div class="text-indigo-400 flex items-center gap-2 mt-1">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing variables...
+        </div>
+    </div>
+</body>
+</html>

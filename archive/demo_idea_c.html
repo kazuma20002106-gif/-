@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo C: Typography & Insight</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0f172a, #172554);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid orange;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: 
+                typing 3s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: rgba(255,255,255,0.7); }
+        }
+    </style>
+</head>
+<body class="gradient-bg h-screen flex flex-col items-center justify-center overflow-hidden font-sans relative">
+    
+    <!-- Header -->
+    <div class="absolute top-8 left-8 text-white z-20">
+        <h2 class="text-2xl font-bold tracking-widest text-slate-200">IDEA C: TYPOGRAPHY & INSIGHT</h2>
+        <p class="text-slate-400 mt-2 text-sm">洗練されたグラデーションとタイピングによる思考の可視化</p>
+    </div>
+
+    <!-- Center Content -->
+    <div class="relative z-10 max-w-4xl w-full text-center px-10 flex flex-col items-center">
+        <!-- Agent Icon -->
+        <div class="w-24 h-24 rounded-full bg-indigo-900/50 border border-indigo-400/50 text-indigo-300 flex items-center justify-center shadow-[0_0_40px_rgba(99,102,241,0.3)] mb-10">
+            <i class="fa-solid fa-chess-knight text-4xl animate-pulse"></i>
+        </div>
+
+        <h3 class="text-indigo-400 text-sm font-bold tracking-[0.3em] mb-6">AGENT: STRATEGY (戦略分析)</h3>
+        
+        <!-- Typewriter Text -->
+        <div class="inline-block text-left">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight typewriter text-center">
+                市場規模とターゲット層の乖離を分析中...
+            </h1>
+        </div>
+        
+        <p class="text-slate-400 text-lg mt-8 max-w-2xl mx-auto opacity-0" style="animation: fadeIn 1s ease-in-out 3s forwards;">
+            「もしこのアイデアをプロのマーケターが見たら、最初にどこを突っ込むだろうか？」<br>
+            前提条件に潜む「致命的な罠」を洗い出しています。
+        </p>
+
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        </style>
+    </div>
+
+    <!-- Toggle Button for Log -->
+    <div class="absolute bottom-10 right-10 z-20">
+        <button class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-white text-sm font-bold backdrop-blur-md transition-all flex items-center gap-2 shadow-lg">
+            <i class="fa-solid fa-terminal"></i> VIEW SYSTEM LOG
+        </button>
+    </div>
+
+</body>
+</html>

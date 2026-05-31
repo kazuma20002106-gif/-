@@ -1,0 +1,116 @@
+/* Dynamic Font Size Control */
+        html {
+            font-size: 16px;
+            transition: font-size 0.15s ease;
+        }
+        html.font-size-medium { font-size: 16px; }
+        html.font-size-large { font-size: 18px; }
+        html.font-size-xl { font-size: 20px; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', 'BIZ UDPGothic', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Accessibility Contrast Boost:
+           灰色の補足テキストの視認性を、画面のメリハリ（階層構造）を100%保ったまま根本的に底上げします */
+        .text-slate-300 { color: #94A3B8 !important; }
+        .text-slate-400, .text-slate-400 * { color: #64748B !important; }
+        .text-slate-500, .text-slate-500 * { color: #475569 !important; }
+        .text-slate-600, .text-slate-600 * { color: #334155 !important; }
+
+        /* Dynamic Tooltip Styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .tooltip-box {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            width: 280px;
+            padding: 1rem;
+            background-color: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(8px);
+            color: #f8fafc;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            font-weight: 500;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            text-align: left;
+            white-space: normal;
+        }
+        .tooltip-box::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(15, 23, 42, 0.96) transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-box,
+        .tooltip-container:focus-within .tooltip-box {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+        
+                .gradient-bg-light { background: linear-gradient(-45deg, #f8fafc, #f0fdfa, #f8fafc, #e0f2fe); background-size: 400% 400%; animation: gradient 10s ease infinite; }
+        .gradient-bg-indigo { background: linear-gradient(-45deg, #f8fafc, #e0e7ff, #f8fafc, #c7d2fe); background-size: 400% 400%; animation: gradient 10s ease infinite; }
+        .gradient-bg-cyan { background: linear-gradient(-45deg, #f8fafc, #cffafe, #f8fafc, #a5f3fc); background-size: 400% 400%; animation: gradient 10s ease infinite; }
+        .gradient-bg-purple { background: linear-gradient(-45deg, #f8fafc, #f3e8ff, #f8fafc, #d8b4fe); background-size: 400% 400%; animation: gradient 10s ease infinite; }
+        .gradient-bg-amber { background: linear-gradient(-45deg, #f8fafc, #fef3c7, #f8fafc, #fde68a); background-size: 400% 400%; animation: gradient 10s ease infinite; }
+        .gradient-bg-emerald { background: linear-gradient(-45deg, #f8fafc, #d1fae5, #f8fafc, #a7f3d0); background-size: 400% 400%; animation: gradient 10s ease infinite; }
+        .gradient-bg-rose { background: linear-gradient(-45deg, #f8fafc, #ffe4e6, #f8fafc, #fecdd3); background-size: 400% 400%; animation: gradient 10s ease infinite; }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .blur-in { animation: blurIn 1.5s ease-out forwards; }
+        @keyframes blurIn {
+            0% { opacity: 0; filter: blur(10px); transform: scale(0.95); }
+            100% { opacity: 1; filter: blur(0); transform: scale(1); }
+        }
+        .delayed-fade-in {
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 1.5s forwards;
+        }
+
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .slide-in-right { animation: slideInRight 0.4s ease-out forwards; }
+
+        /* Stepper Tabs */
+        .tab-btn { display: flex; align-items: center; padding: 1rem 1.25rem; font-size: 0.875rem; font-weight: 700; color: #64748b; border-bottom: 2px solid transparent; position: relative; transition: all 0.2s; cursor: pointer; background: transparent; }
+        .tab-btn:hover:not(.active) { color: #1e293b; background-color: #f8fafc; }
+        .tab-btn .step-num { display: flex; align-items: center; justify-content: center; width: 1.25rem; height: 1.25rem; border-radius: 9999px; background-color: #e2e8f0; color: #475569; font-size: 0.75rem; margin-right: 0.5rem; transition: all 0.2s; font-family: 'Fira Code', monospace; }
+        .tab-btn.active { color: #0d9488; border-bottom-color: #14b8a6; }
+        .tab-btn.active .step-num { background-color: #ccfbf1; color: #0f766e; }
+        .tab-btn.completed .step-num { background-color: #10b981; color: white; border: none; }
+        .tab-btn.completed .step-num::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+        .tab-btn.completed .step-num span { display: none; }
