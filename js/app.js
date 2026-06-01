@@ -430,7 +430,15 @@ function setGlobalFontSize(size) {
             const activateTab = (btnId, areaId) => {
                 const btn = document.getElementById(btnId);
                 const area = document.getElementById(areaId);
-                if (btn) { btn.classList.add('active'); btn.classList.remove('hidden'); }
+                if (btn) { 
+                    btn.classList.add('active'); 
+                    btn.classList.remove('hidden'); 
+                    const container = btn.parentElement;
+                    if(container) {
+                        const scrollPos = btn.offsetLeft - (container.clientWidth / 2) + (btn.clientWidth / 2);
+                        container.scrollTo({ left: Math.max(0, scrollPos), behavior: 'smooth' });
+                    }
+                }
                 if (area) area.classList.remove('hidden');
             };
 
@@ -1731,7 +1739,7 @@ ${depthInstructions.compiler}`;
             if (q.options) {
                 q.options.forEach(opt => {
                     const row = document.createElement('div');
-                    row.className = "flex gap-3 w-full";
+                    row.className = "flex gap-2 sm:gap-3 w-full";
 
                     // Check if this option matches initialHope
                     const isHope = initialHope && (
@@ -1741,23 +1749,23 @@ ${depthInstructions.compiler}`;
 
                     const btnSelect = document.createElement('button');
                     if (isHope) {
-                        btnSelect.className = "flex-grow text-left px-6 py-5 bg-teal-50/20 border-2 border-teal-500 hover:border-teal-600 hover:bg-teal-50/40 rounded-2xl text-lg font-bold text-slate-800 transition-all shadow-md flex items-center justify-between group relative overflow-hidden";
+                        btnSelect.className = "flex-grow text-left p-4 sm:px-6 sm:py-5 bg-teal-50/20 border-2 border-teal-500 hover:border-teal-600 hover:bg-teal-50/40 rounded-xl sm:rounded-2xl text-base sm:text-lg font-bold text-slate-800 transition-all shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 group relative overflow-hidden";
                         btnSelect.innerHTML = `
-                            <span class="relative z-10 flex items-center gap-2.5">
-                                <span class="px-2 py-0.5 bg-teal-500 text-white rounded text-xs font-extrabold shadow-sm tracking-wider">初期希望</span>
-                                <span>${opt}</span>
-                            </span> 
-                            <i class="fa-solid fa-circle-check text-teal-600 text-lg relative z-10"></i>
+                            <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2.5">
+                                <span class="px-2 py-0.5 bg-teal-500 text-white rounded text-[10px] sm:text-xs font-extrabold shadow-sm tracking-wider w-auto">初期希望</span>
+                                <span class="leading-snug">${opt}</span>
+                            </div> 
+                            <i class="fa-solid fa-circle-check text-teal-600 text-lg relative z-10 hidden sm:block"></i>
                             <div class="absolute -right-3 -bottom-3 text-[4rem] text-teal-500/5 rotate-12 pointer-events-none"><i class="fa-solid fa-star"></i></div>
                         `;
                     } else {
-                        btnSelect.className = "flex-grow text-left px-6 py-5 bg-white border-2 border-slate-100 hover:border-teal-400 hover:bg-teal-50/50 rounded-2xl text-lg font-bold text-slate-700 transition-all shadow-sm flex items-center justify-between group";
-                        btnSelect.innerHTML = `<span>${opt}</span> <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-teal-500 transition-colors"></i>`;
+                        btnSelect.className = "flex-grow text-left p-4 sm:px-6 sm:py-5 bg-white border-2 border-slate-100 hover:border-teal-400 hover:bg-teal-50/50 rounded-xl sm:rounded-2xl text-base sm:text-lg font-bold text-slate-700 transition-all shadow-sm flex items-center justify-between group gap-2";
+                        btnSelect.innerHTML = `<span class="leading-snug">${opt}</span> <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-teal-500 transition-colors shrink-0"></i>`;
                     }
                     btnSelect.onclick = () => wizardNext(opt);
 
                     const btnEdit = document.createElement('button');
-                    btnEdit.className = "w-16 flex items-center justify-center bg-white border-2 border-slate-100 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 rounded-2xl text-slate-400 transition-all shadow-sm group";
+                    btnEdit.className = "w-12 sm:w-16 flex items-center justify-center bg-white border-2 border-slate-100 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 rounded-xl sm:rounded-2xl text-slate-400 transition-all shadow-sm group shrink-0";
                     btnEdit.title = "この選択肢を編集して使う";
                     btnEdit.innerHTML = '<i class="fa-solid fa-pen group-hover:scale-110 transition-transform"></i>';
                     btnEdit.onclick = () => {
