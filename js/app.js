@@ -1749,9 +1749,9 @@ ${depthInstructions.compiler}`;
 
                     const btnSelect = document.createElement('button');
                     if (isHope) {
-                        btnSelect.className = "w-full text-left p-4 pr-14 sm:px-6 sm:pr-20 sm:py-5 bg-teal-50/20 border-2 border-teal-500 hover:border-teal-600 hover:bg-teal-50/40 rounded-xl sm:rounded-2xl text-base sm:text-lg font-bold text-slate-800 transition-all shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 group overflow-hidden";
+                        btnSelect.className = "w-full text-left p-4 sm:px-6 sm:py-5 bg-teal-50/20 border-2 border-teal-500 hover:border-teal-600 hover:bg-teal-50/40 rounded-xl sm:rounded-2xl text-base sm:text-lg font-bold text-slate-800 transition-all shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 group overflow-hidden break-all sm:break-normal";
                         btnSelect.innerHTML = `
-                            <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2.5 w-full">
+                            <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2.5 w-full pr-10 sm:pr-0">
                                 <span class="px-2 py-0.5 bg-teal-500 text-white rounded text-[10px] sm:text-xs font-extrabold shadow-sm tracking-wider w-auto shrink-0">初期希望</span>
                                 <span class="leading-snug block">${opt}</span>
                             </div> 
@@ -1759,8 +1759,13 @@ ${depthInstructions.compiler}`;
                             <div class="absolute -right-3 -bottom-3 text-[4rem] text-teal-500/5 rotate-12 pointer-events-none"><i class="fa-solid fa-star"></i></div>
                         `;
                     } else {
-                        btnSelect.className = "w-full text-left p-4 pr-14 sm:px-6 sm:pr-20 sm:py-5 bg-white border-2 border-slate-100 hover:border-teal-400 hover:bg-teal-50/50 rounded-xl sm:rounded-2xl text-base sm:text-lg font-bold text-slate-700 transition-all shadow-sm flex items-center justify-between group gap-2";
-                        btnSelect.innerHTML = `<span class="leading-snug block">${opt}</span> <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-teal-500 transition-colors shrink-0 hidden sm:block"></i>`;
+                        btnSelect.className = "w-full text-left p-4 sm:px-6 sm:py-5 bg-white border-2 border-slate-100 hover:border-teal-400 hover:bg-teal-50/50 rounded-xl sm:rounded-2xl text-base sm:text-lg font-bold text-slate-700 transition-all shadow-sm flex items-center justify-between group gap-2 break-all sm:break-normal";
+                        btnSelect.innerHTML = `
+                            <div class="relative z-10 w-full pr-10 sm:pr-0">
+                                <span class="leading-snug block">${opt}</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-teal-500 transition-colors shrink-0 hidden sm:block"></i>
+                        `;
                     }
                     btnSelect.onclick = () => wizardNext(opt);
 
