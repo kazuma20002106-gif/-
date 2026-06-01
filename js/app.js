@@ -1463,9 +1463,9 @@ ${depthInstructions.compiler}`;
                     qContainer.innerHTML += `
                         <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 hover:-translate-y-1 hover:shadow-md hover:border-${style.colorBase}-300 transition-all cursor-default relative overflow-hidden group">
                             <i class="fa-solid ${style.icon} absolute -right-3 -bottom-3 text-[5rem] opacity-[0.03] group-hover:opacity-[0.08] transition-opacity ${style.colorText}"></i>
-                            <div class="text-sm font-bold text-slate-800 mb-1 relative z-10 flex items-center gap-2">
-                                <span class="text-xs px-2 py-0.5 rounded ${style.bg} ${style.colorText} font-extrabold shadow-sm tracking-wider">${style.label}</span>
-                                ${q.label}
+                            <div class="text-sm font-bold text-slate-800 mb-2 relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2">
+                                <span class="text-xs px-2 py-0.5 rounded ${style.bg} ${style.colorText} font-extrabold shadow-sm tracking-wider inline-block">${style.label}</span>
+                                <span class="leading-snug">${q.label}</span>
                             </div>
                             <div class="text-xs text-slate-500 font-medium relative z-10 mt-2">${q.description}</div>
                         </div>
@@ -1484,9 +1484,9 @@ ${depthInstructions.compiler}`;
                     dContainer.innerHTML += `
                         <div class="p-5 rounded-xl border border-rose-100 bg-rose-50/50 hover:-translate-y-1 hover:shadow-md hover:border-rose-300 transition-all cursor-default relative overflow-hidden group">
                             <i class="fa-solid ${style.icon} absolute -right-3 -bottom-3 text-[5rem] opacity-[0.03] group-hover:opacity-[0.08] transition-opacity ${style.colorText}"></i>
-                            <div class="text-sm font-bold text-rose-800 mb-1 relative z-10 flex items-center gap-2">
-                                <span class="text-xs px-2 py-0.5 rounded ${style.bg} ${style.colorText} font-extrabold shadow-sm tracking-wider">${style.label}</span>
-                                POINT ${i+1}. ${d.label}
+                            <div class="text-sm font-bold text-rose-800 mb-2 relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2">
+                                <span class="text-xs px-2 py-0.5 rounded ${style.bg} ${style.colorText} font-extrabold shadow-sm tracking-wider inline-block">${style.label}</span>
+                                <span class="leading-snug">POINT ${i+1}. ${d.label}</span>
                             </div>
                             <div class="text-xs text-slate-600 font-medium relative z-10 mt-2">${d.detail}</div>
                         </div>
