@@ -631,17 +631,17 @@
                         <!-- Glow effect -->
                         <div class="absolute -inset-[1px] bg-gradient-to-r from-teal-500/10 to-blue-500/10 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500 pointer-events-none"></div>
                         
-                        <div class="relative flex items-center justify-between px-5 py-3.5 bg-slate-50 border-b border-slate-200 rounded-t-2xl z-10 shrink-0">
+                        <div class="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 bg-slate-50 border-b border-slate-200 rounded-t-2xl z-10 shrink-0">
                             <span class="text-xs font-bold text-slate-500 tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-code text-teal-600 text-sm"></i>
-                                <span>COMPILED_PROMPT.MD <span class="text-xs text-teal-600 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md font-bold ml-2 shadow-sm">✏️ 直接編集・調整OK</span></span>
+                                <i class="fa-solid fa-code text-teal-600 text-sm shrink-0"></i>
+                                <span class="truncate">COMPILED_PROMPT.MD <span class="text-[10px] sm:text-xs text-teal-600 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md font-bold ml-1 sm:ml-2 shadow-sm whitespace-nowrap">✏️ 直接編集OK</span></span>
                             </span>
-                            <div class="flex items-center gap-2">
-                                <button onclick="saveCurrentProject()" class="px-4.5 py-2 text-xs bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg transition-all font-extrabold flex items-center gap-1.5 shadow-sm">
-                                    <i class="fa-regular fa-floppy-disk text-slate-500"></i> プロジェクトを保存
+                            <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
+                                <button onclick="saveCurrentProject()" class="w-full justify-center px-2 sm:px-4 py-2.5 sm:py-2 text-xs bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg transition-all font-extrabold flex items-center gap-1.5 shadow-sm whitespace-nowrap overflow-hidden">
+                                    <i class="fa-regular fa-floppy-disk text-slate-500 shrink-0"></i> <span class="truncate">プロジェクト保存</span>
                                 </button>
-                                <button onclick="copyGeneratedPrompt()" class="px-4.5 py-2 text-xs bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-all font-extrabold flex items-center gap-1.5 shadow-md shadow-teal-500/10">
-                                    <i class="fa-regular fa-copy text-sm"></i> コピーする
+                                <button onclick="copyGeneratedPrompt()" class="w-full justify-center px-2 sm:px-4 py-2.5 sm:py-2 text-xs bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-all font-extrabold flex items-center gap-1.5 shadow-md shadow-teal-500/10 whitespace-nowrap overflow-hidden">
+                                    <i class="fa-regular fa-copy text-sm shrink-0"></i> <span class="truncate">コピーする</span>
                                 </button>
                             </div>
                         </div>
