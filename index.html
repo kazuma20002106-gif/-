@@ -30,10 +30,12 @@
         <div>
             <div class="flex items-center gap-3">
                 <span class="px-3 py-1 text-xs font-bold bg-teal-50 text-teal-600 rounded border border-teal-200 uppercase tracking-widest font-mono">SYSTEM ONLINE</span>
-                <h1 class="text-3xl uppercase flex items-baseline">
-                    <span class="font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 drop-shadow-sm pr-1 mr-2">PRE-PUT</span>
-                    <span class="font-medium tracking-[0.2em] text-slate-400 text-xl">DASHBOARD</span>
-                    <span class="px-2 py-1 bg-slate-200 text-slate-600 rounded text-xs font-bold ml-4 tracking-normal align-middle self-center">v2.1.0-Depth</span>
+                <h1 class="text-3xl uppercase flex flex-col sm:flex-row sm:items-baseline">
+                    <span class="font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 drop-shadow-sm pr-1 sm:mr-2 whitespace-nowrap">PRE-PUT</span>
+                    <div class="flex items-center sm:items-baseline mt-1 sm:mt-0">
+                        <span class="font-medium tracking-[0.2em] text-slate-400 text-lg sm:text-xl">DASHBOARD</span>
+                        <span class="px-2 py-1 bg-slate-200 text-slate-600 rounded text-xs font-bold ml-3 sm:ml-4 tracking-normal align-middle self-center">v2.1.0-Depth</span>
+                    </div>
                 </h1>
             </div>
             <p class="text-sm text-slate-500 mt-2 font-medium">前提を組み、スタートラインを突き抜ける。</p>
@@ -226,9 +228,9 @@
                     </div>
                 </div>
                 <!-- GLOBAL STATUS INDICATOR -->
-                <div id="currentGlobalStatus" class="hidden items-start gap-3 px-5 py-3 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl">
-                    <i class="fa-solid fa-circle-notch fa-spin text-teal-500 text-xl mr-3 mt-0.5"></i>
-                    <span id="currentGlobalStatusText" class="text-sm font-extrabold text-teal-700 tracking-wide break-words leading-snug w-full">...</span>
+                <div id="currentGlobalStatus" class="hidden items-start gap-3 px-5 py-3 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl h-[4.5rem] sm:h-auto overflow-hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin text-teal-500 text-xl mr-2 sm:mr-3 mt-0.5 shrink-0"></i>
+                    <span id="currentGlobalStatusText" class="text-sm font-extrabold text-teal-700 tracking-wide break-words leading-snug w-full line-clamp-2">...</span>
                 </div>
             </div>
 
