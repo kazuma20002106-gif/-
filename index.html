@@ -325,7 +325,7 @@
                     </div>
 
                     <!-- Floating Terminal Widget -->
-                    <div id="logWidget" class="absolute bottom-8 right-8 w-[500px] bg-slate-900/90 border border-slate-700 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 translate-y-[120%] backdrop-blur-md z-50">
+                    <div id="logWidget" class="absolute bottom-4 right-4 left-4 sm:left-auto sm:bottom-8 sm:right-8 sm:w-[500px] bg-slate-900/90 border border-slate-700 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 translate-y-[120%] backdrop-blur-md z-50">
                         <div class="flex items-center justify-between px-4 py-3 bg-slate-800/80 border-b border-slate-700 cursor-pointer" onclick="toggleLogWidget()">
                             <div class="flex items-center gap-2">
                                 <i class="fa-solid fa-terminal text-slate-400 text-sm"></i>
@@ -337,7 +337,7 @@
                     </div>
 
                     <!-- Open Log Button -->
-                    <button onclick="toggleLogWidget()" class="absolute bottom-8 right-8 px-6 py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-full text-slate-600 hover:text-teal-600 text-sm font-extrabold transition-all flex items-center gap-3 shadow-lg z-40">
+                    <button onclick="toggleLogWidget()" class="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 px-5 py-2.5 sm:px-6 sm:py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-full text-slate-600 hover:text-teal-600 text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 sm:gap-3 shadow-lg z-40">
                         <i class="fa-solid fa-terminal"></i> 処理ログを表示
                     </button>
                 </div>
@@ -669,11 +669,11 @@
     </div>
     
     <!-- TOAST CONTAINERS -->
-    <div id="toastContainer" class="fixed bottom-8 right-8 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+    <div id="toastContainer" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:bottom-8 sm:right-8 z-50 flex flex-col gap-3 sm:max-w-sm w-auto sm:w-full pointer-events-none"></div>
 
     <!-- FLOATING HELP WIDGET -->
-    <div class="fixed bottom-24 right-8 z-40 flex flex-col items-end gap-4 pointer-events-none">
-        <div id="helpPopover" class="pointer-events-auto w-[320px] bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-2xl transition-all duration-300 translate-y-4 opacity-0 pointer-events-none hidden">
+    <div class="fixed bottom-20 right-4 sm:bottom-24 sm:right-8 z-40 flex flex-col items-end gap-4 pointer-events-none">
+        <div id="helpPopover" class="pointer-events-auto w-[calc(100vw-2rem)] sm:w-[320px] bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-2xl transition-all duration-300 translate-y-4 opacity-0 pointer-events-none hidden">
             <div class="flex justify-between items-start mb-3 border-b border-slate-100 pb-3">
                 <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-circle-info text-teal-500"></i> コンテキスト・ヘルプ
