@@ -214,9 +214,9 @@
 
             <!-- AGENT STATUS PANEL -->
             <div class="bg-white border border-slate-200 shadow-sm rounded-2xl flex flex-col">
-                <div class="flex items-center gap-3 px-3 py-4 overflow-x-auto">
-                    <span class="text-xs text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap px-3">Agent Status</span>
-                    <div class="flex gap-3 min-w-max">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 px-3 py-4">
+                    <span class="text-xs text-slate-400 font-bold uppercase tracking-wider px-3 sm:whitespace-nowrap">Agent Status</span>
+                    <div class="flex flex-wrap gap-2 sm:gap-3">
                         <div id="stat-1" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-chess-knight"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">戦略分析</span><span class="text-xs text-indigo-500 font-mono font-bold" id="stat-text-1">STRATEGY</span></div></div>
                         <div id="stat-2" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-ruler-combined"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">仕様監査</span><span class="text-xs text-cyan-500 font-mono font-bold" id="stat-text-2">TECH</span></div></div>
                         <div id="stat-3" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 border border-transparent text-sm transition-colors"><div class="h-8 w-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-pen-nib"></i></div><div class="flex flex-col"><span class="font-bold text-slate-700 text-xs">意匠設計</span><span class="text-xs text-purple-500 font-mono font-bold" id="stat-text-3">DESIGN</span></div></div>
@@ -360,7 +360,7 @@
 
                         <!-- Extracted Traps -->
                         <div class="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-md mb-10">
-                            <h4 class="text-lg sm:text-xl font-bold text-rose-700 mb-4 sm:mb-6 flex items-center border-b border-slate-100 pb-3 sm:pb-4"><i class="fa-solid fa-lightbulb mr-3"></i> 2階部分：プロの視点（見落としがちな重要ポイント）</h4>
+                            <h4 class="text-lg sm:text-xl font-bold text-rose-700 mb-4 sm:mb-6 flex items-center border-b border-slate-100 pb-3 sm:pb-4 flex-wrap"><i class="fa-solid fa-lightbulb mr-3"></i> 2階部分：プロの視点<span class="inline-block mt-1 sm:mt-0">（見落としがちな重要ポイント）</span></h4>
                             <div id="discoveryTrapsList" class="space-y-4">
                                 <!-- Trap items injected here -->
                             </div>
